@@ -1,0 +1,37 @@
++-------------------+       +-------------------+       +-------------------+
+|      User         |       |     Booking       |       |     Payment       |
++-------------------+       +-------------------+       +-------------------+
+| UserID (PK)       |1    M | BookingID (PK)    |1    1 | PaymentID (PK)    |
+| Username          +-------+ UserID (FK)       +-------+ BookingID (FK)    |
+| Password          |       | VehicleID (FK)    |       | PaymentMethod     |
+| Email             |       | BookingDate       |       | PaymentDate       |
+| PhoneNumber       |       | StartDate         |       | Amount            |
+| Address           |       | EndDate           |       +-------------------+
++-------------------+       | TotalPrice        |
+                            | BookingStatus     |
+                            +-------------------+
+                            
+                                                            +-------------------+       +-------------------+
+                                                            |     Review        |       |     Vehicle       |
+                                                            +-------------------+       +-------------------+
+                                                            | ReviewID (PK)     |M    1 | VehicleID (PK)    |
+                                                            | UserID (FK)       +-------+ Type              |
+                                                            | VehicleID (FK)    |       | Brand             |
+                                                            | Rating            |       | Model             |
+                                                            | Comment           |       | Year              |
+                                                            | ReviewDate        |       | PricePerDay       |
+                                                            +-------------------+       | AvailabilityStatus|
+                                                                                        | LocationID (FK)   |
+                                                                                        +-------------------+
+                                                                               
+
++-------------------+       +-------------------+
+|     Manager       |1    M |     Location      |
++-------------------+       +-------------------+
+| ManagerID (PK)    |       | LocationID (PK)   |
+| Username          |       | Address           |
+| Password          +-------+ City              |
+| Email             |       | State             |
+| PhoneNumber       |       | Country           |
++-------------------+       | ZipCode           |
+                            +-------------------+

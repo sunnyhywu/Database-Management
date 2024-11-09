@@ -1,0 +1,284 @@
+-- Create the database
+CREATE DATABASE VehicleRentalManagementSystem;
+USE VehicleRentalManagementSystem;
+
+-- Create the Member table
+CREATE TABLE Member (
+    Member_ID INT AUTO_INCREMENT PRIMARY KEY,
+    MemberFirstName VARCHAR(30),
+    MemberLastName VARCHAR(30),
+    MemberPassword VARCHAR(15),
+    Email VARCHAR(35),
+    MemberPhoneNumber VARCHAR(10),
+    Address VARCHAR(50),
+    City VARCHAR(30),
+    State VARCHAR(30),
+    Country VARCHAR(30),
+    ZipCode VARCHAR(10)
+);
+
+-- Create the Manager table
+CREATE TABLE Manager (
+    Manager_ID INT AUTO_INCREMENT PRIMARY KEY,
+    ManagerFirstName VARCHAR(30),
+    ManagerLastName VARCHAR(30),
+    ManagerPassword VARCHAR(15),
+    Email VARCHAR(35),
+    ManagerPhoneNumber VARCHAR(10)
+);
+
+-- Create the Location table
+CREATE TABLE Location (
+    Location_ID INT AUTO_INCREMENT PRIMARY KEY,
+    Address VARCHAR(50),
+    City VARCHAR(30),
+    State VARCHAR(30),
+    Country VARCHAR(30),
+    ZipCode VARCHAR(10)
+);
+
+-- Create the Vehicle table
+CREATE TABLE Vehicle (
+    Vehicle_ID INT AUTO_INCREMENT PRIMARY KEY,
+    Location_ID INT,
+    Brand VARCHAR(30),
+    Model VARCHAR(30),
+    Year VARCHAR(4),
+    PricePerHour DECIMAL(6,2),
+    AvailabilityStatus VARCHAR(15),
+    CarNumber VARCHAR(15),
+    FOREIGN KEY (Location_ID) REFERENCES Location(Location_ID)
+);
+
+-- Create the Booking table
+CREATE TABLE Booking (
+    Booking_ID INT AUTO_INCREMENT PRIMARY KEY,
+    Member_ID INT,
+    Vehicle_ID INT,
+    Depart_ID INT,
+    Destination_ID INT,
+    Review_ID INT,
+    BookingDate DATE,
+    BookingStatus VARCHAR(15),
+    FOREIGN KEY (Member_ID) REFERENCES Member(Member_ID),
+    FOREIGN KEY (Vehicle_ID) REFERENCES Vehicle(Vehicle_ID)
+);
+
+-- Create the CancelBooking table
+CREATE TABLE CancelBooking (
+    CancelBooking_ID INT AUTO_INCREMENT PRIMARY KEY,
+    Booking_ID INT,
+    Member_ID INT,
+    CancelDate DATE,
+    FOREIGN KEY (Booking_ID) REFERENCES Booking(Booking_ID),
+    FOREIGN KEY (Member_ID) REFERENCES Member(Member_ID)
+);
+
+-- Create the Depart table
+CREATE TABLE Depart (
+    Depart_ID INT AUTO_INCREMENT PRIMARY KEY,
+    Booking_ID INT,
+    Location_ID INT,
+    DepartTime TIME,
+    DepartDate DATE,
+    FOREIGN KEY (Booking_ID) REFERENCES Booking(Booking_ID),
+    FOREIGN KEY (Location_ID) REFERENCES Location(Location_ID)
+);
+
+-- Create the Destination table
+CREATE TABLE Destination (
+    Destination_ID INT AUTO_INCREMENT PRIMARY KEY,
+    Booking_ID INT,
+    Location_ID INT,
+    ReturnTime TIME,
+    ReturnDate DATE,
+    FOREIGN KEY (Booking_ID) REFERENCES Booking(Booking_ID),
+    FOREIGN KEY (Location_ID) REFERENCES Location(Location_ID)
+);
+
+-- Create the Payment table
+CREATE TABLE Payment (
+    Payment_ID INT AUTO_INCREMENT PRIMARY KEY,
+    Booking_ID INT,
+    Invoice_ID INT,
+    PaymentMethod VARCHAR(10),
+    PaymentDate DATE,
+    Amount DECIMAL(6,2),
+    PaymentStatus VARCHAR(15),
+    FOREIGN KEY (Booking_ID) REFERENCES Booking(Booking_ID)
+);
+
+-- Create the Invoice table
+CREATE TABLE Invoice (
+    Invoice_ID INT AUTO_INCREMENT PRIMARY KEY,
+    Payment_ID INT,
+    InvoiceStatus VARCHAR(15),
+    FOREIGN KEY (Payment_ID) REFERENCES Payment(Payment_ID)
+);
+
+-- Create the Review table
+CREATE TABLE Review (
+    Review_ID INT AUTO_INCREMENT PRIMARY KEY,
+    Booking_ID INT,
+    Vehicle_ID INT,
+    Rating DECIMAL(6,2),
+    Comment VARCHAR(200),
+    ReviewDate DATE,
+    FOREIGN KEY (Booking_ID) REFERENCES Booking(Booking_ID),
+    FOREIGN KEY (Vehicle_ID) REFERENCES Vehicle(Vehicle_ID)
+);
+
+-- Create the CustomerService table
+CREATE TABLE CustomerService (
+    Cus_service_ID INT AUTO_INCREMENT PRIMARY KEY,
+    Manager_ID INT,
+    Member_ID INT,
+    Content VARCHAR(200),
+    FOREIGN KEY (Manager_ID) REFERENCES Manager(Manager_ID),
+    FOREIGN KEY (Member_ID) REFERENCES Member(Member_ID)
+);
+
+-- Create the EditHistory table
+CREATE TABLE EditHistory (
+    Edit_His_ID INT AUTO_INCREMENT PRIMARY KEY,
+    Manager_ID INT,
+    EditTable VARCHAR(20),
+    EditAction VARCHAR(50),
+    EditMessage VARCHAR(50),
+    EditDate DATE,
+    FOREIGN KEY (Manager_ID) REFERENCES Manager(Manager_ID)
+);
+
+-- Create the PriceRate table
+CREATE TABLE PriceRate (
+    Rate_ID INT AUTO_INCREMENT PRIMARY KEY,
+    Vehicle_ID INT,
+    Rate DECIMAL(6,2),
+    FOREIGN KEY (Vehicle_ID) REFERENCES Vehicle(Vehicle_ID)
+);
+
+-- Insert sample data into the Member table
+INSERT INTO Member (MemberFirstName, MemberLastName, MemberPassword, Email, MemberPhoneNumber, Address, City, State, Country, ZipCode)
+VALUES 
+('John', 'Doe', 'password123', 'john.doe@example.com', '1234567890', '123 Main St', 'Anytown', 'Anystate', 'AnyCountry', '12345'),
+('Jane', 'Smith', 'password456', 'jane.smith@example.com', '0987654321', '456 Elm St', 'Othertown', 'Otherstate', 'OtherCountry', '67890'),
+('Jim', 'Beam', 'password789', 'jim.beam@example.com', '5678901234', '789 Oak St', 'Newtown', 'Newstate', 'NewCountry', '34567'),
+('Jack', 'Daniels', 'password012', 'jack.daniels@example.com', '8765432109', '101 Pine St', 'Oldtown', 'Oldstate', 'OldCountry', '89012'),
+('Jill', 'Valentine', 'password345', 'jill.valentine@example.com', '4321098765', '202 Maple St', 'Nexttown', 'Nextstate', 'NextCountry', '56789');
+
+-- Insert sample data into the Location table
+INSERT INTO Location (Address, City, State, Country, ZipCode)
+VALUES 
+('123 Main St', 'Anytown', 'Anystate', 'AnyCountry', '12345'),
+('456 Elm St', 'Othertown', 'Otherstate', 'OtherCountry', '67890'),
+('789 Oak St', 'Newtown', 'Newstate', 'NewCountry', '34567'),
+('101 Pine St', 'Oldtown', 'Oldstate', 'OldCountry', '89012'),
+('202 Maple St', 'Nexttown', 'Nextstate', 'NextCountry', '56789');
+
+-- Insert sample data into the Vehicle table
+INSERT INTO Vehicle (Location_ID, Brand, Model, Year, PricePerHour, AvailabilityStatus, CarNumber)
+VALUES 
+(1, 'Toyota', 'Corolla', '2020', 15.00, 'Available', 'ABC123'),
+(2, 'Honda', 'Civic', '2019', 18.00, 'Available', 'XYZ789'),
+(3, 'Ford', 'Focus', '2018', 20.00, 'Available', 'LMN456'),
+(4, 'Chevrolet', 'Cruze', '2021', 22.00, 'Available', 'OPQ123'),
+(5, 'Nissan', 'Altima', '2020', 25.00, 'Available', 'RST789');
+
+-- Insert sample data into the Manager table
+INSERT INTO Manager (ManagerFirstName, ManagerLastName, ManagerPassword, Email, ManagerPhoneNumber)
+VALUES 
+('Alice', 'Johnson', 'admin123', 'alice.johnson@example.com', '1231231234'),
+('Bob', 'Williams', 'admin456', 'bob.williams@example.com', '3213214321'),
+('Charlie', 'Brown', 'admin789', 'charlie.brown@example.com', '4564564567'),
+('David', 'Smith', 'admin012', 'david.smith@example.com', '7897897890'),
+('Eve', 'Davis', 'admin345', 'eve.davis@example.com', '9879879876');
+
+-- Insert sample data into the Booking table
+INSERT INTO Booking (Member_ID, Vehicle_ID, Depart_ID, Destination_ID, Review_ID, BookingDate, BookingStatus)
+VALUES 
+(1, 1, NULL, NULL, NULL, '2024-06-01', 'Booked'),
+(2, 2, NULL, NULL, NULL, '2024-06-02', 'Booked'),
+(3, 3, NULL, NULL, NULL, '2024-06-03', 'Booked'),
+(4, 4, NULL, NULL, NULL, '2024-06-04', 'Booked'),
+(5, 5, NULL, NULL, NULL, '2024-06-05', 'Booked');
+
+-- Insert sample data into the CancelBooking table
+INSERT INTO CancelBooking (Booking_ID, Member_ID, CancelDate)
+VALUES 
+(1, 1, '2024-06-06'),
+(2, 2, '2024-06-07'),
+(3, 3, '2024-06-08'),
+(4, 4, '2024-06-09'),
+(5, 5, '2024-06-10');
+
+-- Insert sample data into the Depart table
+INSERT INTO Depart (Booking_ID, Location_ID, DepartTime, DepartDate)
+VALUES 
+(1, 1, '09:00:00', '2024-06-10'),
+(2, 2, '10:00:00', '2024-06-11'),
+(3, 3, '11:00:00', '2024-06-12'),
+(4, 4, '12:00:00', '2024-06-13'),
+(5, 5, '13:00:00', '2024-06-14');
+
+-- Insert sample data into the Destination table
+INSERT INTO Destination (Booking_ID, Location_ID, ReturnTime, ReturnDate)
+VALUES 
+(1, 1, '17:00:00', '2024-06-15'),
+(2, 2, '18:00:00', '2024-06-16'),
+(3, 3, '19:00:00', '2024-06-17'),
+(4, 4, '20:00:00', '2024-06-18'),
+(5, 5, '21:00:00', '2024-06-19');
+
+-- Insert sample data into the Payment table
+INSERT INTO Payment (Booking_ID, Invoice_ID, PaymentMethod, PaymentDate, Amount, PaymentStatus)
+VALUES 
+(1, 1, 'Credit', '2024-06-10', 75.00, 'Paid'),
+(2, 2, 'Debit', '2024-06-11', 90.00, 'Paid'),
+(3, 3, 'Cash', '2024-06-12', 100.00, 'Paid'),
+(4, 4, 'Credit', '2024-06-13', 110.00, 'Paid'),
+(5, 5, 'Debit', '2024-06-14', 125.00, 'Paid');
+
+-- Insert sample data into the Invoice table
+INSERT INTO Invoice (Payment_ID, InvoiceStatus)
+VALUES 
+(1, 'Generated'),
+(2, 'Generated'),
+(3, 'Generated'),
+(4, 'Generated'),
+(5, 'Generated');
+
+-- Insert sample data into the Review table
+INSERT INTO Review (Booking_ID, Vehicle_ID, Rating, Comment, ReviewDate)
+VALUES 
+(1, 1, 4.5, 'Great experience!', '2024-06-20'),
+(2, 2, 4.0, 'Good service.', '2024-06-21'),
+(3, 3, 3.5, 'Satisfactory.', '2024-06-22'),
+(4, 4, 5.0, 'Excellent!', '2024-06-23'),
+(5, 5, 4.8, 'Very good.', '2024-06-24');
+
+-- Insert sample data into the CustomerService table
+INSERT INTO CustomerService (Manager_ID, Member_ID, Content)
+VALUES 
+(1, 1, 'Inquiry about vehicle availability.'),
+(2, 2, 'Question about payment methods.'),
+(3, 3, 'Complaint about booking process.'),
+(4, 4, 'Feedback on service.'),
+(5, 5, 'Request for invoice.');
+
+-- Insert sample data into the EditHistory table
+INSERT INTO EditHistory (Manager_ID, EditTable, EditAction, EditMessage, EditDate)
+VALUES 
+(1, 'Vehicle', 'Update', 'Updated vehicle price.', '2024-06-10'),
+(2, 'Member', 'Insert', 'Added new member.', '2024-06-11'),
+(3, 'Booking', 'Delete', 'Deleted booking.', '2024-06-12'),
+(4, 'Location', 'Insert', 'Added new location.', '2024-06-13'),
+(5, 'Manager', 'Update', 'Updated manager details.', '2024-06-14');
+
+-- Insert sample data into the PriceRate table
+INSERT INTO PriceRate (Vehicle_ID, Rate)
+VALUES 
+(1, 15.00),
+(2, 18.00),
+(3, 20.00),
+(4, 22.00),
+(5, 25.00);
